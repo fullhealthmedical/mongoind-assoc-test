@@ -7,7 +7,6 @@ Mongoid.configure do |config|
   config.connect_to('mongoid_embedded_test')
 end
 
-
 Mongo::Logger.logger = Logger.new(STDOUT)
 Mongo::Logger.logger.level = Logger::DEBUG
 # increase log size limit
@@ -20,7 +19,7 @@ Mongo::Monitoring::CommandLogSubscriber::LOG_STRING_LIMIT = 10_000
 class Post
   include Mongoid::Document
 
-  field :title
+  field :title, type: String
 
   embeds_one :author
 end
@@ -28,7 +27,7 @@ end
 class Author
   include Mongoid::Document
 
-  field :name
+  field :name, type: String
 
   embedded_in :post
   embeds_many :addresses
@@ -37,7 +36,7 @@ end
 class Address
   include Mongoid::Document
 
-  field :city
+  field :city, type: String
 
   embedded_in :author
 end
@@ -57,7 +56,7 @@ class TestUpdateEmbedded < Minitest::Test
     author = Author.new(name: 'bar')
     addresses = [Address.new(city: 'baz')]
 
-    author.assign_attributes(addresses: addresses)
+    author.addresses = addresses
     post.assign_attributes(author: author)
 
     post.save!
